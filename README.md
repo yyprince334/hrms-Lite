@@ -59,7 +59,7 @@ The focus of this project is on delivering a stable, usable, and well-structured
 ---
 
 ## Project Structure
-
+```
 hrms-lite/
 │
 ├── backend/
@@ -119,6 +119,7 @@ hrms-lite/
 │
 ├── .gitignore
 └── README.md
+```
 
 ---
 
