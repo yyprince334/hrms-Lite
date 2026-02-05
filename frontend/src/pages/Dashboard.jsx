@@ -130,6 +130,9 @@ export default function Dashboard() {
             </div>
 
             <div className="bg-white/60 backdrop-blur-sm rounded-2xl border border-slate-200 p-8 shadow-sm hover:shadow-md transition-all duration-300">
+              
+
+              <AttendanceForm employees={employees} onSuccess={handleAttendanceRefresh} />
               {/* Employee Selector */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-slate-700 mb-3">
@@ -155,8 +158,6 @@ export default function Dashboard() {
                   </div>
                 </div>
               </div>
-
-              <AttendanceForm employees={employees} onSuccess={handleAttendanceRefresh} />
               <AttendanceList employeeId={selectedEmployee} />
             </div>
           </section>
