@@ -61,27 +61,63 @@ The focus of this project is on delivering a stable, usable, and well-structured
 ## Project Structure
 
 hrms-lite/
+│
 ├── backend/
+│   │
 │   ├── app/
-│   │   ├── main.py
-│   │   ├── database.py
-│   │   ├── models.py
-│   │   ├── schemas.py
-│   │   ├── crud.py
+│   │   ├── __init__.py
+│   │   ├── main.py                # FastAPI entry point
+│   │   ├── database.py            # DB connection & session
+│   │   ├── models.py              # SQLAlchemy models
+│   │   ├── schemas.py             # Pydantic schemas
+│   │   ├── crud.py                # DB operations
+│   │   │
 │   │   └── routers/
-│   ├── requirements.txt
-│   └── Dockerfile
+│   │       ├── __init__.py
+│   │       ├── employees.py       # Employee APIs
+│   │       └── attendance.py      # Attendance APIs
+│   │
+│   ├── requirements.txt           # Python dependencies
+│   ├── Dockerfile                 # Container config (production-safe)
+│   └── .env.example               # Example env vars (not committed)
 │
 ├── frontend/
+│   │
+│   ├── public/
+│   │   └── favicon.ico
+│   │
 │   ├── src/
 │   │   ├── components/
+│   │   │   ├── common/
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── Loader.jsx
+│   │   │   │   └── ErrorMessage.jsx
+│   │   │   │
+│   │   │   ├── employees/
+│   │   │   │   ├── EmployeeForm.jsx
+│   │   │   │   └── EmployeeList.jsx
+│   │   │   │
+│   │   │   └── attendance/
+│   │   │       ├── AttendanceForm.jsx
+│   │   │       └── AttendanceList.jsx
+│   │   │
 │   │   ├── pages/
+│   │   │   └── Dashboard.jsx      # Main UI page
+│   │   │
 │   │   ├── services/
-│   │   └── App.jsx
+│   │   │   └── api.js              # Axios instance
+│   │   │
+│   │   ├── App.jsx                # App root
+│   │   ├── main.jsx               # React entry
+│   │   └── index.css              # Tailwind base styles
+│   │
 │   ├── index.html
 │   ├── package.json
-│   └── tailwind.config.js
+│   ├── postcss.config.js
+│   ├── tailwind.config.js
+│   └── vite.config.js
 │
+├── .gitignore
 └── README.md
 
 ---
