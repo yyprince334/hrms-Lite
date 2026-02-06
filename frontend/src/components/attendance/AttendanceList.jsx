@@ -1,20 +1,43 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import api from "../../services/api";
 
 export default function AttendanceList({ employeeId }) {
   const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [filterDate, setFilterDate] = useState("");
 
   useEffect(() => {
     if (!employeeId) return;
+
     const fetchAttendance = async () => {
-      setLoading(true);
-      const res = await api.get(`/attendance/${employeeId}`);
-      setRecords(res.data);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const res = await api.get(`/attendance/${employeeId}`);
+        setRecords(res.data);
+      } finally {
+        setLoading(false);
+      }
     };
+
     fetchAttendance();
   }, [employeeId]);
+
+  /* =========================
+     BONUS LOGIC
+     ========================= */
+
+  const filteredRecords = useMemo(() => {
+    if (!filterDate) return records;
+    return records.filter((r) => r.date === filterDate);
+  }, [records, filterDate]);
+
+  const totalPresentDays = useMemo(() => {
+    return records.filter((r) => r.status === "Present").length;
+  }, [records]);
+
+  /* =========================
+     EMPTY / LOADING STATES
+     ========================= */
 
   if (!employeeId) {
     return (
@@ -60,15 +83,39 @@ export default function AttendanceList({ employeeId }) {
     );
   }
 
+  /* =========================
+     MAIN RENDER
+     ========================= */
+
   return (
     <div className="mt-8">
-      <div className="mb-4 flex items-center justify-between">
-        <h4 className="text-sm font-medium text-slate-700">Attendance History</h4>
-        <span className="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
-          {records.length} {records.length === 1 ? 'record' : 'records'}
-        </span>
+      {/* Header + Summary */}
+      <div className="mb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <h4 className="text-sm font-medium text-slate-700">
+            Attendance History
+          </h4>
+          <p className="text-xs text-slate-500 mt-1">
+            Total Present Days: <strong>{totalPresentDays}</strong>
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <input
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            className="border rounded-lg px-3 py-1.5 text-sm"
+          />
+
+          <span className="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+            {filteredRecords.length}{" "}
+            {filteredRecords.length === 1 ? "record" : "records"}
+          </span>
+        </div>
       </div>
 
+      {/* Table */}
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -82,38 +129,44 @@ export default function AttendanceList({ employeeId }) {
                 </th>
               </tr>
             </thead>
+
             <tbody className="divide-y divide-slate-100">
-              {records.map((r, index) => (
-                <tr 
-                  key={r.id} 
+              {filteredRecords.map((r, index) => (
+                <tr
+                  key={r.id}
                   className="hover:bg-slate-50/50 transition-colors duration-150"
                   style={{
                     animation: `fadeIn 0.3s ease-out forwards`,
                     animationDelay: `${index * 0.05}s`,
-                    opacity: 0
+                    opacity: 0,
                   }}
                 >
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
                         <svg className="w-5 h-5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                       </div>
-                      <span className="text-slate-900 font-medium">{r.date}</span>
+                      <span className="text-slate-900 font-medium">
+                        {r.date}
+                      </span>
                     </div>
                   </td>
+
                   <td className="px-6 py-4">
-                    <span 
+                    <span
                       className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium ${
-                        r.status === 'Present' 
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                          : 'bg-red-50 text-red-700 border border-red-200'
+                        r.status === "Present"
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-red-50 text-red-700 border border-red-200"
                       }`}
                     >
-                      <span 
+                      <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          r.status === 'Present' ? 'bg-emerald-500' : 'bg-red-500'
+                          r.status === "Present"
+                            ? "bg-emerald-500"
+                            : "bg-red-500"
                         }`}
                       ></span>
                       {r.status}
