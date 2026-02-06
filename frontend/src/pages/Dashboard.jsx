@@ -104,10 +104,7 @@ export default function Dashboard() {
               {loading ? (
                 <Loader />
               ) : (
-                <EmployeeList
-                  employees={employees}
-                  onDelete={fetchEmployees}
-                />
+                <EmployeeList employees={employees} onDelete={fetchEmployees} />
               )}
             </div>
           </section>
@@ -135,10 +132,11 @@ export default function Dashboard() {
                 <label className="block text-sm font-medium text-slate-700 mb-3">
                   Select Employee
                 </label>
+
                 <select
                   value={selectedEmployee}
                   onChange={(e) => setSelectedEmployee(e.target.value)}
-                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-3.5 text-slate-900 focus:ring-2 focus:ring-slate-900"
+                  className="w-full appearance-none px-4 py-3.5 bg-white border border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all duration-200 cursor-pointer hover:border-slate-400"
                 >
                   <option value="">Choose an employee</option>
                   {employees.map((emp) => (
